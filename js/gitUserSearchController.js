@@ -50,14 +50,3 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
     }
   }
 });
-
-          // }
-          // $scope.repoList = repos;
-          // $scope.repoCommitCount = result.length;
-          // var commits = 0;
-          // for (var i = 0; i < result.length; i++) {
-          //   if (result[i].committer.login === $scope.searchTerm) {
-          //     var commits = commits + 1
-          //   }
-          // }
-          // $scope.userCommitCount = commits;
