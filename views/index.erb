@@ -10,34 +10,39 @@
   </head>
 
   <body ng-controller="GitUserSearchController">
-    <h1>Github Report Card</h1>
-    <div>
+
+    <div id="form">
+      <h1>Github Report Card</h1>
+      <p>Please enter username:<p>
       <form class="form-horizontal">
-        Please enter username: <input type="text" ng-model="searchTerm" ng-change="doSearch()" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 50} }">
+        <input type="text" ng-model="searchTerm" ng-change="doSearch()" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 500, 'blur': 50} }">
         <button class="btn" ng-click="doSearch()">Search</button>
       </form>
-      <p id="search_for" style="display: none">You searched for: </p>
-      <p>{{ searchTerm }}</p>
-      <p>{{ repoCount }}</p>
-      <br>
-      <ul class="list-group" ng-repeat="user in searchResult.items">
-        <li>
-          <img class="img" ng-src="{{user.avatar_url}}">
-          <a ng-href="{{user.html_url}}">{{user.login}}</a>
-        </li>
-      </ul>
+      <p id="search_message">You searched for: {{ searchTerm }}</p>
     </div>
+      
+    <div class="profile_container" ng-repeat="user in searchResult.items">
+      <img class="img" ng-src="{{user.avatar_url}}">
+      <section class="info">
+        <p>Username:<br><a ng-href="{{user.html_url}}">{{user.login}}</a></p>
+        <button class="btn" ng-click="viewRepos()">View Report</button>
+      </section>
+    </div>
+
+    <br>
+
+    <h2 id="repo_header">Repositories</h2>
     
-    <div id="repos" style="display: none">
-      <ul class="list-group" ng-repeat="repo in repos">
-        <li >Repo: {{ repo.name }}
-          <li>Total commits: {{ repo.totalCommits }}</li>
-          <li>{{ searchTerm }}'s commits: {{ repo.userCommits }}</li>
-        </li>
+    <div class="repo_container" ng-repeat="repo in repos">
+      <ul class="list-group">
+        <li>Repo: {{ repo.name }}</li>
+        <li>Total commits: {{ repo.totalCommits }}</li>
+        <li>{{ searchTerm }}'s commits: {{ repo.userCommits }}</li>
       </ul>
     </div>
 
     <script src="js/app.js"></script>
     <script src="js/gitUserSearchController.js"></script>
+
   </body>
 </html>
