@@ -1,8 +1,6 @@
 githubUserSearch.controller('GitUserSearchController', function($scope, $resource) {
 
   var searchResource = $resource('https://api.github.com/search/users');
-  var repoResource = $resource('https://api.github.com/orgs/makersacademy/repos'); 
-  // /bookmark_manager/commits');
   var creds = {
       client_id: "d6dc6a59ba1cebdb9205",
       client_secret: 'eb1e63221b5d03abd382de7075d5622ddb94e2c0',
@@ -21,9 +19,9 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
       });
 
       var repos = [];
-      var commits = 0;
 
       var setCommitCount = function() {
+        var repoResource = $resource('https://api.github.com/users/' + searchTerm + '/repos'); 
         repoResource.query(creds, function(result) {
           result.forEach(function(repo) {
             repos.push({ name: repo.name });
@@ -50,14 +48,3 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
     }
   }
 });
-
-          // }
-          // $scope.repoList = repos;
-          // $scope.repoCommitCount = result.length;
-          // var commits = 0;
-          // for (var i = 0; i < result.length; i++) {
-          //   if (result[i].committer.login === $scope.searchTerm) {
-          //     var commits = commits + 1
-          //   }
-          // }
-          // $scope.userCommitCount = commits;
