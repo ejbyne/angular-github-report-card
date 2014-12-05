@@ -24,26 +24,30 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
     }
   }
 
-  var reposHandler = function(result) {
-    result.forEach(function(item) {
-      var selectedRepo = $resource('https://api.github.com/repos/' + $scope.searchTerm + '/' + item.name + '/commits');
-      selectedRepo.query(creds).$promise.then(function(result) {
-        item.totalCommits = result.length;
-        item.userCommits = 0;
-        result.forEach(function(commit) {
-          if (commit.committer.login === $scope.searchTerm) {
-            item.userCommits = item.userCommits + 1;
-          }
-        })
-      })
-    });
-    $scope.repos = result;
-  }
-
   $scope.viewRepos = function() {
     var repoResource = $resource('https://api.github.com/users/' + $scope.searchTerm + '/repos'); 
-    repoResource.query(creds).$promise.then(reposHandler)    
+    repoResource.query(creds).$promise.then(reposHandler); 
+  }
+
+  var commitsReader = function(repo, commits) {
+    repo.totalCommits = commits.length;
+    repo.userCommits = 0;
+    commits.forEach(function(commit) {
+      if (commit.committer.login === $scope.searchTerm) {
+        repo.userCommits = repo.userCommits + 1;
+      }
+    });
+  }
+  
+  var reposHandler = function(repos) {
+    repos.forEach(function(repo) {
+      var selectedRepo = $resource('https://api.github.com/repos/' + $scope.searchTerm + '/' + repo.name + '/commits');
+      selectedRepo.query(creds).$promise.then(function(commits) { commitsReader(repo, commits); });
+    });
+    $scope.repos = repos;
     $('#repo_header').show();
     $('.repo_container').show();
   }
+
+
 });
