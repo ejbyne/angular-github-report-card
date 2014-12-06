@@ -21,7 +21,7 @@ describe('GitUserSearchController', function() {
 		beforeEach(inject(function($httpBackend) {
 			httpBackend = $httpBackend
 			httpBackend
-				.when("GET", "https://api.github.com/search/users?q=hello")
+				.when("GET", "https://api.github.com/search/users?client_id=d6dc6a59ba1cebdb9205&client_secret=eb1e63221b5d03abd382de7075d5622ddb94e2c0&per_page=100&q=hello")
 				.respond({
 					items: items
 				});
@@ -44,4 +44,33 @@ describe('GitUserSearchController', function() {
 			expect(scope.searchResult.items).toEqual(items);
 		});
 	});
+
+	describe('when clicking view report', function() {
+
+		var httpBackend;
+		beforeEach(inject(function($httpBackend) {
+			httpBackend = $httpBackend
+			httpBackend
+				.when("GET", "https://api.github.com/users/hello/repos?client_id=d6dc6a59ba1cebdb9205&client_secret=eb1e63221b5d03abd382de7075d5622ddb94e2c0&per_page=100")
+				.respond(reposArray);
+			httpBackend
+				.when("GET", "https://api.github.com/repos/hello/test/commits?client_id=d6dc6a59ba1cebdb9205&client_secret=eb1e63221b5d03abd382de7075d5622ddb94e2c0&per_page=100")
+				.respond(commitsArray);
+		}));
+	
+		var reposArray = [ { name: 'test' } ];
+
+		var commitsArray = [ { committer: {login: 'hello'} } ];
+
+		var result = [ { name: 'test', totalCommits: 1, userCommits: 1 } ];
+
+		it('should display repo information', function() {
+			scope.searchTerm = 'hello';
+			scope.viewRepos();
+			httpBackend.flush();
+			expect(scope.repos).toEqual(result);
+		});
+		
+	});
+
 });
