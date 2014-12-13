@@ -7,15 +7,13 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
     client_secret: 'eb1e63221b5d03abd382de7075d5622ddb94e2c0',
     per_page: '100' };
 
-  var hideInfo = function() {
-    $('.profile_container').hide();
-    $('#search_message').hide();
-    $('#repo_header').hide();
-    $('.repo_container').hide();
-  };
+  // var hideInfo = function() {
+  // };
 
   $scope.doSearch = function() {
-    hideInfo;
+    // hideInfo;
+    $('.profile_container').hide();
+    $('#search_message').hide();
     if ($scope.searchTerm != '') {
       $scope.searchResult = searchResource.get({
         q: $scope.searchTerm,
@@ -25,6 +23,8 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
       });
       $('#search_message').show();
       $('.profile_container').show();
+      $('#repo_header').hide();
+      $('.repo_container').hide();
     };
   };
 
