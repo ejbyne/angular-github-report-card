@@ -62,12 +62,16 @@ describe('GitUserSearchController', function() {
 
 		var commitsArray = [ { committer: {login: 'hello'} } ];
 
-		var result = [ { name: 'test', totalCommits: 1, userCommits: 1 } ];
+		var result = { name: 'test', totalCommits: 1, userCommits: 1 };
 
 		it('should display repo information', function() {
 			scope.searchTerm = 'hello';
 			scope.viewRepos();
 			httpBackend.flush();
+			console.log('==================')
+			console.log(scope.repos[0]);
+			console.log(result);
+
 			expect(scope.repos).toEqual(result);
 		});
 		
