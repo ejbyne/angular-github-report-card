@@ -1,24 +1,16 @@
 githubUserSearch.controller('GitUserSearchController', function($scope, $resource) {
 
-  var searchResource = $resource('https://api.github.com/search/users');
-
-  var creds = { 
-    client_id: 'd6dc6a59ba1cebdb9205',
-    client_secret: 'eb1e63221b5d03abd382de7075d5622ddb94e2c0',
-    per_page: '100' };
-
-  // var hideInfo = function() {
-  // };
+  var client_id = 'd6dc6a59ba1cebdb9205';
+  var client_secret = 'eb1e63221b5d03abd382de7075d5622ddb94e2c0'
 
   $scope.doSearch = function() {
-    // hideInfo;
     $('.profile_container').hide();
     $('#search_message').hide();
     if ($scope.searchTerm != '') {
-      $scope.searchResult = searchResource.get({
+      $scope.searchResult = $resource('https://api.github.com/search/users').get({
         q: $scope.searchTerm,
-        client_id: 'd6dc6a59ba1cebdb9205',
-        client_secret: 'eb1e63221b5d03abd382de7075d5622ddb94e2c0',
+        client_id: client_id,
+        client_secret: client_secret,
         per_page: '100'
       });
       $('#search_message').show();
@@ -32,14 +24,23 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
     repo.totalCommits = commits.length;
     repo.userCommits = 0;
     commits.forEach(function(commit) {
-      if (commit.committer.login === $scope.searchTerm) { repo.userCommits = repo.userCommits + 1; }
+      if (commit.committer.login === $scope.searchTerm) {
+        repo.userCommits = repo.userCommits + 1;
+      }
     });
   };
   
   var reposHandler = function(repos) {
     repos.forEach(function(repo) {
       var selectedRepo = $resource('https://api.github.com/repos/' + $scope.searchTerm + '/' + repo.name + '/commits');
-      selectedRepo.query(creds).$promise.then(function(commits) { commitsReader(repo, commits); });
+      selectedRepo.query({
+        client_id: client_id,
+        client_secret: client_secret,
+        per_page: '100'
+      })
+      .$promise.then(function(commits) {
+        commitsReader(repo, commits);
+      });
     });
     $scope.repos = repos;
     $('#repo_header').show();
@@ -47,37 +48,13 @@ githubUserSearch.controller('GitUserSearchController', function($scope, $resourc
   };
 
   $scope.viewRepos = function() {
-    var repoResource = $resource('https://api.github.com/users/' + $scope.searchTerm + '/repos'); 
-    repoResource.query(creds).$promise.then(reposHandler); 
+    var userRepos = $resource('https://api.github.com/users/' + $scope.searchTerm + '/repos'); 
+    userRepos.query({
+      client_id: client_id,
+      client_secret: client_secret,
+      per_page: '100'
+    })
+    .$promise.then(reposHandler);
   };
 
 });
-
-  // var params = { 
-  //   q: $scope.searchTerm,
-  //   client_id: 'd6dc6a59ba1cebdb9205',
-  //   client_secret: 'eb1e63221b5d03abd382de7075d5622ddb94e2c0',
-  //   per_page: '100' }
-
-  // var viewUser = function(userInfo) {
-  //   $scope.searchResult = userInfo;
-  //   $('#search_message').show();
-  //   $('.profile_container').show();
-  // }
-
-  // $scope.doSearch = function() {
-  //   hideInfo;
-  //   if ($scope.searchTerm != '') {
-  //     var searchResource = $resource('https://api.github.com/users/' + $scope.searchTerm);
-  //     searchResource.get(creds).$promise.then(function(result) { viewUser(result); });
-  //   }
-  // }
-
-  //   $scope.doSearch = function() {
-  //   hideInfo;
-  //   if ($scope.searchTerm != '') {
-  //     $scope.searchResult = searchResource.get(params);
-  //     $('#search_message').show();
-  //     $('.profile_container').show();
-  //   }
-  // }
