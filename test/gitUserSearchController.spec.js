@@ -57,22 +57,17 @@ describe('GitUserSearchController', function() {
 				.when("GET", "https://api.github.com/repos/hello/test/commits?client_id=d6dc6a59ba1cebdb9205&client_secret=eb1e63221b5d03abd382de7075d5622ddb94e2c0&per_page=100")
 				.respond(commitsArray);
 		}));
-	
-		var reposArray = [ { name: 'test' } ];
-
-		var commitsArray = [ { committer: {login: 'hello'} } ];
-
-		var result = { name: 'test', totalCommits: 1, userCommits: 1 };
+		
+		var reposArray = [{ name: 'test' }];
+		var commitsArray = [{ committer: {login: 'hello'} } ];
 
 		it('should display repo information', function() {
 			scope.searchTerm = 'hello';
 			scope.viewRepos();
 			httpBackend.flush();
-			console.log('==================')
-			console.log(scope.repos[0]);
-			console.log(result);
-
-			expect(scope.repos).toEqual(result);
+			expect(scope.repos[0].name).toEqual('test');
+			expect(scope.repos[0].totalCommits).toEqual(1);
+			expect(scope.repos[0].userCommits).toEqual(1);
 		});
 		
 	});
